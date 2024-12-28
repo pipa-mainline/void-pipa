@@ -41,8 +41,11 @@ mount --bind /dev/pts rootfs_mountpoint/dev/pts
 mount --bind /proc rootfs_mountpoint/proc
 mount --bind /sys rootfs_mountpoint/sys
 
+if [ "$USE_CACHE_REPO" -eq 1 ]; then
+	echo "repository=$CACHE_REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
+fi
+
 echo "xiaomi-pipa" > rootfs_mountpoint/etc/hostname
-echo "repository=$REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
 uuid=$(blkid -o value linux.img | head -n 1)
 echo "UUID=$uuid / ext4 defaults 0 0" >> rootfs_mountpoint/etc/fstab
 echo "nameserver 1.1.1.1" > rootfs_mountpoint/etc/resolv.conf
@@ -75,6 +78,10 @@ mount --bind repo rootfs_mountpoint/repo
 chroot rootfs_mountpoint xbps-install -y --repository /repo $PACKAGES
 umount rootfs_mountpoint/repo
 rm -rf rootfs_mountpoint/repo
+
+if [ "$USE_CACHE_REPO" -eq 1 ]; then
+	echo "repository=$REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
+fi
 
 cp rootfs_mountpoint/boot/boot.img ../out/
 
