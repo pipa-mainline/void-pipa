@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# Kernel hook build boot.img
+#
+# Arguments passed to this script: $1 pkgname, $2 version.
+#
+PKGNAME="$1"
+VERSION="$2"
+
+gzip -kf /boot/vmlinux-6.12.0-sm8250-adomerle
+cat /boot/vmlinux-6.12.0-sm8250-adomerle.gz /boot/dtbs/dtbs-6.12.0-sm8250-adomerle/qcom/sm8250-xiaomi-pipa.dtb > /boot/vmlinux-6.12.0-sm8250-adomerle.gz-dtb
+
+CMDLINE=$(cat /etc/cmdline)
+
+mkbootimg \
+	--header_version 0 \
+	--kernel_offset 0x00008000 \
+	--base 0x00000000 \
+	--ramdisk_offset 0x01000000 \
+	--second_offset 0x00f00000 \
+	--tags_offset 0x00000100 \
+	--pagesize 4096 \
+	--kernel /boot/vmlinux-6.12.0-sm8250-adomerle.gz-dtb \
+	--ramdisk /boot/initramfs-6.12.0-sm8250-adomerle.img \
+	--cmdline "$CMDLINE" \
+	-o /boot/boot.img
+
+echo "Boot has been built to /boot/boot.img"
