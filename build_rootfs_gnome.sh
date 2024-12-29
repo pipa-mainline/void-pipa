@@ -42,7 +42,7 @@ if [ "$USE_CACHE_REPO" -eq 1 ]; then
 	echo "repository=$CACHE_REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
 fi
 
-chroot rootfs_mountpoint xbps-install -Suy gnome gnome-apps gdm mesa-freedreno-dri pipewire bluez libspa-bluetooth xdg-desktop-portal-gtk
+chroot rootfs_mountpoint xbps-install -Suy gnome gnome-apps gdm mesa-freedreno-dri pipewire bluez pipa-bt-quirk libspa-bluetooth xdg-desktop-portal-gtk
 
 # Pipewire
 chroot rootfs_mountpoint mkdir -pv /etc/pipewire/pipewire.conf.d

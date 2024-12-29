@@ -1,9 +1,9 @@
 # Template file for 'pipa-metapkg'
 pkgname=pipa-metapkg
 version=0.2
-revision=1
+revision=2
 build_style=meta
-depends="linux6.12-pipa pipa-bt-quirk pipa-firmware pipa-hooks mkinitcpio"
+depends="linux6.12-pipa pipa-firmware pipa-hooks mkinitcpio"
 short_desc="Xiaomi Pad 6 Packages (metapackage)"
 maintainer="Arseniy <me@adomerle.pw>"
 license="GPL2.0"
