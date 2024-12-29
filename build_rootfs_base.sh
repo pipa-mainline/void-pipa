@@ -73,7 +73,7 @@ EOD"
 echo "%wheel ALL=(ALL:ALL) ALL" > rootfs_mountpoint/etc/sudoers.d/wheel
 
 chroot rootfs_mountpoint xbps-install -Syuv
-chroot rootfs_mountpoint xbps-install -Sy dracut NetworkManager chrony
+chroot rootfs_mountpoint xbps-install -Sy NetworkManager chrony
 
 # Enable services
 chroot rootfs_mountpoint /bin/bash -c "ln -sv /etc/sv/dbus /etc/runit/runsvdir/default"
