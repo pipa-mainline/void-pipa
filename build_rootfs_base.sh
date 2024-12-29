@@ -7,6 +7,10 @@ if [ ! -d $WORKDIR ]; then
 	mkdir $WORKDIR
 fi
 
+if [ ! -d $OUTDIR ]; then
+	mkdir $OUTDIR
+fi
+
 pushd $WORKDIR
 
 if [ ! -f "rootfs.tar.xz" ]; then
@@ -86,10 +90,10 @@ if [ "$USE_CACHE_REPO" -eq 1 ]; then
 	echo "repository=$REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
 fi
 
-cp rootfs_mountpoint/boot/boot.img ../out/
+cp rootfs_mountpoint/boot/boot.img ../$OUTDIR/
 
 rm rootfs_mountpoint/qemu-aarch64-static
 umount -R rootfs_mountpoint
-img2simg linux.img ../out/void_base.img
-chown 1000:1000 ../out/void_base.img ../out/boot.img
+img2simg linux.img ../$OUTDIR/void_base.img
+chown 1000:1000 ../$OUTDIR/void_base.img ../$OUTDIR/boot.img
 popd

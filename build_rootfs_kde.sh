@@ -5,6 +5,10 @@ if [ ! -d $WORKDIR ]; then
         mkdir $WORKDIR
 fi
 
+if [ ! -d $OUTDIR ]; then
+	mkdir $OUTDIR
+fi
+
 pushd $WORKDIR
 
 if [ ! -f "linux.img" ]; then
@@ -65,5 +69,5 @@ fi
 
 rm rootfs_mountpoint/qemu-aarch64-static
 umount -R rootfs_mountpoint
-img2simg linux_kde.img ../out/void_kde.img
-chown 1000:1000 ../out/void_kde.img
+img2simg linux_kde.img ../$OUTDIR/void_kde.img
+chown 1000:1000 ../$OUTDIR/void_kde.img

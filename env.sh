@@ -7,3 +7,4 @@ USE_CACHE_REPO=0
 CACHE_REPO="http://192.168.1.135:8080/current/aarch64"
 PACKAGES="pipa-metapkg"
 WORKDIR="workdir"
+OUTDIR="out"
