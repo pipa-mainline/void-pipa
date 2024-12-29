@@ -1,0 +1,10 @@
+lib/firmware/sm8250/xiaomi/pipa/a650_zap.mbn
+lib/firmware/sm8250/xiaomi/pipa/adsp.mbn
+lib/firmware/sm8250/xiaomi/pipa/adspr.jsn
+lib/firmware/sm8250/xiaomi/pipa/adspua.jsn
+lib/firmware/sm8250/xiaomi/pipa/cdsp.mbn
+lib/firmware/sm8250/xiaomi/pipa/cdspr.jsn
+lib/firmware/sm8250/xiaomi/pipa/slpi.mbn
+lib/firmware/sm8250/xiaomi/pipa/slpir.jsn
+lib/firmware/sm8250/xiaomi/pipa/slpius.jsn
+lib/firmware/sm8250/xiaomi/pipa/venus.mbn

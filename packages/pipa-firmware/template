@@ -1,43 +1,37 @@
 # Template file for 'pipa-firmware'
 pkgname=pipa-firmware
-version=20241228
+version=20241229
 revision=1
 depends="linux-firmware-qualcomm linux-firmware-network"
 short_desc="Binary firmware blobs for the Xiaomi Pad 6"
 maintainer="Arseniy <me@adomerle.pw>"
 license="proprietary"
 homepage="https://github.com/pipa-mainline/xiaomi-pipa-firmware"
-commit="014994d4d635833f40403bd2eb5b6daf4d86fa5f"
+commit="842d35beffeda8c6d1b0e611b335543bf0e6b41e"
 distfiles="https://github.com/pipa-mainline/xiaomi-pipa-firmware/archive/${commit}/xiaomi-pipa-firmware-${commit}.tar.gz"
-checksum=a3e0d707aa437dd061c0495b7c5cfa8dcc4c18fac69cc25933b9e5dea36500a5
+checksum=fb998f540e8e5dcb28355a2ee00a3c36d4bfe5478d6f7962045887c58e789963
 archs="aarch64*"
 nostrip=1
+ignore_elf_dirs="/usr/share/qcom"
+noshlibprovides=yes
+noverifyrdeps=yes
 
 do_install() {
-	local awinic_firmwares novatek_firmwares qcom_firmwares firmware
-	awinic_firmwares+=" awinic/aw88230_2113_pipa.bin"
-	novatek_firmwares+=" novatek/nt36532_csot.bin"
-	novatek_firmwares+=" novatek/nt36532_tianma.bin"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/a650_zap.mbn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/adsp.mbn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/adspr.jsn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/adspua.jsn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/cdsp.mbn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/cdspr.jsn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/slpi.mbn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/slpir.jsn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/slpius.jsn"
-	qcom_firmwares+=" sm8250/xiaomi/pipa/venus.mbn"
+	local firmware
 
-	for firmware in ${awinic_firmwares}; do
+	for firmware in $(cat ${FILESDIR}/awinic_firmware.files); do
 		vinstall ${firmware} 0644 usr/lib/firmware/awinic
 	done
 
-	for firmware in ${novatek_firmwares}; do
+	for firmware in $(cat ${FILESDIR}/novatek_firmware.files); do
 		vinstall ${firmware} 0644 usr/lib/firmware/novatek
 	done
 
-	for firmware in ${qcom_firmwares}; do
+	for firmware in $(cat ${FILESDIR}/qcom_firmware.files); do
 		vinstall ${firmware} 0644 usr/lib/firmware/qcom/sm8250/xiaomi/pipa
+	done
+
+	for firmware in $(cat ${FILESDIR}/dsp_firmware.files); do
+		vinstall ${firmware} 0644 $(echo ${firmware} | rev | cut -d'/' -f2- | rev)
 	done
 }
