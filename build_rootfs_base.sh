@@ -49,9 +49,6 @@ if [ "$USE_CACHE_REPO" -eq 1 ]; then
 	echo "repository=$CACHE_REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
 fi
 
-echo "repository=http://pipa-mainline.github.io/void-pipa-repo/current/" > rootfs_mountpoint/etc/xbps.d/10-pipa-repository.conf
-cp ../config/xbps/custom-repo.key "rootfs_mountpoint/var/db/xbps/keys/a4:79:3a:f6:31:24:1e:34:69:7c:e2:27:c1:72:f5:5f.plist"
-
 echo "xiaomi-pipa" > rootfs_mountpoint/etc/hostname
 uuid=$(blkid -o value linux.img | head -n 1)
 echo "UUID=$uuid / ext4 defaults 0 0" >> rootfs_mountpoint/etc/fstab
@@ -89,6 +86,9 @@ rm -rf rootfs_mountpoint/repo
 if [ "$USE_CACHE_REPO" -eq 1 ]; then
 	echo "repository=$REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
 fi
+
+echo "repository=http://pipa-mainline.github.io/void-pipa-repo/current/" > rootfs_mountpoint/etc/xbps.d/10-pipa-repository.conf
+cp ../config/xbps/custom-repo.key "rootfs_mountpoint/var/db/xbps/keys/a4:79:3a:f6:31:24:1e:34:69:7c:e2:27:c1:72:f5:5f.plist"
 
 cp rootfs_mountpoint/boot/boot.img ../$OUTDIR/
 
