@@ -1,0 +1,13 @@
+#!/bin/bash
+sv check bluetoothd || exit 1
+if [ ! -r /etc/bluetooth-mac ]; then
+mac_addr=$(printf 'MAC_ADDR="%02x:%02x:%02x:%02x:%02x:%02x"' \
+        $((RANDOM % 128)) $((RANDOM % 256)) $((RANDOM % 256)) \
+        $((RANDOM % 256)) $((RANDOM % 256)) $((RANDOM % 256)))
+echo $mac_addr > /etc/bluetooth-mac
+source /etc/bluetooth-mac
+else
+source /etc/bluetooth-mac
+fi
+btmgmt --index 0 public-addr $MAC_ADDR
+exec pause

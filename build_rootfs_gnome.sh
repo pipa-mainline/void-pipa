@@ -48,6 +48,7 @@ chroot rootfs_mountpoint /bin/bash -c "ln -s /usr/share/examples/pipewire/20-pip
 # Enable services
 chroot rootfs_mountpoint /bin/bash -c "ln -sv /etc/sv/gdm /etc/runit/runsvdir/default"
 chroot rootfs_mountpoint /bin/bash -c "ln -sv /etc/sv/bluetoothd /etc/runit/runsvdir/default"
+chroot rootfs_mountpoint /bin/bash -c "ln -sv /etc/sv/pipa-bt-quirk /etc/runit/runsvdir/default"
 
 chroot rootfs_mountpoint /sbin/usermod -aG audio,video,bluetooth user
 
