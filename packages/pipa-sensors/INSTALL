@@ -1,0 +1,12 @@
+case "${ACTION}" in
+post)
+	# HACK: Remove sensors other than accel because
+	# it causes iio-proxy to crash
+	sed -i "s/ ssc-light ssc-proximity ssc-compass//g" /usr/lib/udev/rules.d/80-iio-sensor-proxy-libssc.rules 
+
+	if [ ! "$UPDATE" = "yes" ]; then
+		ln -s /etc/sv/hexagonrpcd-sdsp /etc/runit/runsvdir/default
+		ln -s /etc/sv/iio-sensor-proxy /etc/runit/runsvdir/default
+	fi
+	;;
+esac
