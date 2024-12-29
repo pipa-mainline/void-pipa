@@ -1,15 +1,15 @@
 # Template file for 'linux6.12-pipa'
 pkgname=linux6.12-pipa
 version=6.12.0
-revision=1
+revision=2
 short_desc="Linux kernel and modules (${version%.*} series for Xiaomi Pad 6)"
 maintainer="Arseniy <me@adomerle.pw>"
 license="GPL-2.0-only"
 homepage="https://www.kernel.org"
-commit="8ca72a09dfbb510d80c28987cbb138e220a15806"
+commit="f883bf9ad432e535e5931ea266e027a335a18c2c"
 distfiles="https://github.com/pipa-mainline/linux/archive/${commit}/linux-${commit}.tar.gz"
 
-checksum="51c0129d16b56433bf573d00061f21c8889a4724eccf390e1ae2d822a58d518d"
+checksum="23fc8cb3dd68b0ded591abda13b2f4bb86398bae6476f8591dcaa79c5a3feeae"
 python_version=3
 
 archs="aarch64*"
