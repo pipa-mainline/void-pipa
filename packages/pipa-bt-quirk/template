@@ -1,10 +1,10 @@
 # Template file for 'pipa-bt-quirk'
 pkgname=pipa-bt-quirk
 version=1
-revision=1
+revision=2
 short_desc="Bluetooth hack for Xiaomi Pad 6"
 maintainer="Arseniy <me@adomerle.pw>"
-depends="android-tools"
+depends="bluez"
 license="GPL2.0"
 homepage="https://github.com/pipa-mainline/void-pipa"
 archs="aarch64*"
