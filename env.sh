@@ -5,5 +5,5 @@ XBPS_URI="https://repo-fastly.voidlinux.org/static/xbps-static-latest.x86_64-mus
 REPO="https://repo-fastly.voidlinux.org/current/aarch64"
 USE_CACHE_REPO=0
 CACHE_REPO="http://192.168.1.135:8080/current/aarch64"
-PACKAGES="pipa-firmware pipa-hooks linux6.12-pipa"
+PACKAGES="pipa-metapkg"
 WORKDIR="workdir"
