@@ -39,7 +39,7 @@ mount --bind /sys rootfs_mountpoint/sys
 install -m755 qemu-aarch64-static rootfs_mountpoint/
 
 if [ "$USE_CACHE_REPO" -eq 1 ]; then
-	echo "repository=$CACHE_REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
+	echo "repository=$CACHE_REPO" > rootfs_mountpoint/etc/xbps.d/10-repository-main.conf
 fi
 
 chroot rootfs_mountpoint xbps-install -Suy gnome gnome-apps gdm mesa-freedreno-dri pipewire bluez pipa-bt-quirk libspa-bluetooth xdg-desktop-portal-gtk
@@ -57,7 +57,7 @@ chroot rootfs_mountpoint /bin/bash -c "ln -sv /etc/sv/pipa-bt-quirk /etc/runit/r
 chroot rootfs_mountpoint /sbin/usermod -aG audio,video,bluetooth user
 
 if [ "$USE_CACHE_REPO" -eq 1 ]; then
-	echo "repository=$REPO" > rootfs_mountpoint/etc/xbps.d/00-repository-main.conf
+	echo "repository=$REPO" > rootfs_mountpoint/etc/xbps.d/10-repository-main.conf
 fi
 
 rm rootfs_mountpoint/qemu-aarch64-static
