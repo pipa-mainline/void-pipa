@@ -43,7 +43,7 @@ if [ "$USE_CACHE_REPO" -eq 1 ]; then
 fi
 
 
-chroot rootfs_mountpoint xbps-install -Suy kde-plasma kde-baseapps sddm xorg mesa-freedreno-dri qt6-virtualkeyboard pipewire bluez pipa-bt-quirk libspa-bluetooth xdg-desktop-portal-kde
+chroot rootfs_mountpoint xbps-install -Suy kde-plasma kde-baseapps sddm mesa-freedreno-dri maliit-keyboard pipewire bluez pipa-bt-quirk libspa-bluetooth xdg-desktop-portal-kde
 
 # SDDM Configuration
 chroot rootfs_mountpoint touch /etc/sddm.conf
