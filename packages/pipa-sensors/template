@@ -1,7 +1,7 @@
 # Template file for 'pipa-sensors'
 pkgname=pipa-sensors
 version=1
-revision=1
+revision=2
 short_desc="SSC metapackage for Xiaomi Pad 6"
 maintainer="Arseniy <me@adomerle.pw>"
 depends="hexagonrpc iio-sensor-proxy-ssc"
@@ -10,6 +10,5 @@ homepage="https://github.com/pipa-mainline/void-pipa"
 archs="aarch64*"
 
 do_install() {
-	vinstall ${FILESDIR}/hexagonrpcd-sdsp-conf 0644 etc/sv/hexagonrpcd-sdsp conf
 	vinstall ${FILESDIR}/81-libssc-xiaomi-pipa.rules 0644 /usr/lib/udev/rules.d
 }

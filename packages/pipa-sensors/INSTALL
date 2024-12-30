@@ -2,7 +2,10 @@ case "${ACTION}" in
 post)
 	# HACK: Remove sensors other than accel because
 	# it causes iio-proxy to crash
-	sed -i "s/ ssc-light ssc-proximity ssc-compass//g" /usr/lib/udev/rules.d/80-iio-sensor-proxy-libssc.rules 
+	sed -i "s/ ssc-light ssc-proximity ssc-compass//g" /usr/lib/udev/rules.d/80-iio-sensor-proxy-libssc.rules
+
+	# Config
+	sed -i "s/\/usr\/share\/qcom/\/usr\/share\/qcom\/sm8250\/Xiaomi\/pipa/g" /etc/sv/hexagonrpcd-sdsp/conf
 
 	if [ ! "$UPDATE" = "yes" ]; then
 		ln -s /etc/sv/hexagonrpcd-sdsp /etc/runit/runsvdir/default
