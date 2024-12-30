@@ -63,4 +63,4 @@ fi
 rm rootfs_mountpoint/qemu-aarch64-static
 umount -R rootfs_mountpoint
 img2simg linux_gnome.img ../$OUTDIR/void_gnome.img
-chown 1000:1000 ../$OUTDIR/void_gnome.img
+chown -Rvh 1000:1000 ../$OUTDIR

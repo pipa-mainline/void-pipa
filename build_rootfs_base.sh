@@ -95,5 +95,5 @@ cp rootfs_mountpoint/boot/boot-*.img ../$OUTDIR/boot.img
 rm rootfs_mountpoint/qemu-aarch64-static
 umount -R rootfs_mountpoint
 img2simg linux.img ../$OUTDIR/void_base.img
-chown 1000:1000 ../$OUTDIR/void_base.img ../$OUTDIR/boot.img
+chown -Rvh 1000:1000 ../$OUTDIR
 popd
