@@ -42,19 +42,19 @@ if [ "$USE_CACHE_REPO" -eq 1 ]; then
 	echo "repository=$CACHE_REPO" > rootfs_mountpoint/etc/xbps.d/10-repository-main.conf
 fi
 
+chroot rootfs_mountpoint xbps-install -Suy kde-plasma kde-baseapps sddm mesa-freedreno-dri maliit-keyboard pipewire bluez libspa-bluetooth xdg-desktop-portal-kde pulseaudio
 
-chroot rootfs_mountpoint xbps-install -Suy kde-plasma kde-baseapps sddm mesa-freedreno-dri maliit-keyboard pipewire bluez pipa-bt-quirk libspa-bluetooth xdg-desktop-portal-kde
+mkdir rootfs_mountpoint/repo
+mount --bind repo rootfs_mountpoint/repo
+chroot rootfs_mountpoint xbps-install -y --repository /repo pipa-bt-quirk
+umount rootfs_mountpoint/repo
+rm -rf rootfs_mountpoint/repo
 
 # SDDM Configuration
 chroot rootfs_mountpoint touch /etc/sddm.conf
 chroot rootfs_mountpoint mkdir /etc/sddm.conf.d/
 cp ../config/kde/sddm/10-wayland.conf rootfs_mountpoint/etc/sddm.conf.d/
 cp ../config/kde/sddm/50-theme.conf rootfs_mountpoint/etc/sddm.conf.d/
-
-# Pipewire
-chroot rootfs_mountpoint mkdir -pv /etc/pipewire/pipewire.conf.d
-chroot rootfs_mountpoint /bin/bash -c "ln -s /usr/share/examples/wireplumber/10-wireplumber.conf /etc/pipewire/pipewire.conf.d/"
-chroot rootfs_mountpoint /bin/bash -c "ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf /etc/pipewire/pipewire.conf.d/"
 
 # Enable services
 chroot rootfs_mountpoint /bin/bash -c "ln -sv /etc/sv/sddm /etc/runit/runsvdir/default"

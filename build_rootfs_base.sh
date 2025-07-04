@@ -69,8 +69,11 @@ EOD"
 
 echo "%wheel ALL=(ALL:ALL) ALL" > rootfs_mountpoint/etc/sudoers.d/wheel
 
+chroot rootfs_mountpoint xbps-install -Syu xbps
 chroot rootfs_mountpoint xbps-install -Syuv
 chroot rootfs_mountpoint xbps-install -Sy NetworkManager chrony
+
+cp ../config/xbps/custom-repo.key "rootfs_mountpoint/var/db/xbps/keys/a4:79:3a:f6:31:24:1e:34:69:7c:e2:27:c1:72:f5:5f.plist"
 
 # Enable services
 chroot rootfs_mountpoint /bin/bash -c "ln -sv /etc/sv/dbus /etc/runit/runsvdir/default"
@@ -88,7 +91,6 @@ if [ "$USE_CACHE_REPO" -eq 1 ]; then
 fi
 
 echo "repository=$CUSTOM_REPO" > rootfs_mountpoint/etc/xbps.d/00-pipa-repository.conf
-cp ../config/xbps/custom-repo.key "rootfs_mountpoint/var/db/xbps/keys/a4:79:3a:f6:31:24:1e:34:69:7c:e2:27:c1:72:f5:5f.plist"
 
 cp rootfs_mountpoint/boot/boot-*.img ../$OUTDIR/boot.img
 

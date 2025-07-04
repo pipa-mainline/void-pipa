@@ -1,0 +1,15 @@
+# Template file for 'pipa-alsa-ucm'
+pkgname=pipa-alsa-ucm
+version=1
+revision=1
+short_desc="Alsa UCM Configs for Xiaomi Pad 6"
+maintainer="Arseniy <me@adomerle.pw>"
+depends="alsa-ucm-conf"
+license="GPL2.0"
+homepage="https://github.com/pipa-mainline/void-pipa"
+archs="aarch64*"
+
+do_install() {
+	vinstall "${FILESDIR}/Xiaomi Pad 6.conf" 0644 "usr/share/alsa/ucm2/conf.d/sm8250/"
+	vinstall "${FILESDIR}/HiFi.conf" 0644 "usr/share/alsa/ucm2/Xiaomi/pipa/"
+}

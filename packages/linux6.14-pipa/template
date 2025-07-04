@@ -1,0 +1,182 @@
+# Template file for 'linux6.14-pipa'
+pkgname=linux6.14-pipa
+version=6.14.11
+revision=1
+short_desc="Linux kernel and modules (${version%.*} series for Xiaomi Pad 6)"
+maintainer="Arseniy <me@adomerle.pw>"
+license="GPL-2.0-only"
+homepage="https://www.kernel.org"
+commit="35462dbefa2df3177448065d33cfa9f1691e4189"
+distfiles="https://github.com/pipa-mainline/linux/archive/${commit}/linux-${commit}.tar.gz"
+
+checksum="41a0cbafe568a53105a5019a3350078e04d83f0e8eed93d9f7e42a035b8abe41"
+python_version=3
+
+archs="aarch64*"
+
+nodebug=yes
+nostrip=yes
+noverifyrdeps=yes
+noshlibprovides=yes
+preserve=yes
+
+hostmakedepends="tar xz bc elfutils-devel flex gmp-devel kmod libmpc-devel
+ pkg-config openssl-devel perl uboot-mkimage cpio pahole python3 zstd"
+
+_localversion="sm8250-adomerle"
+_kernver="${version}-${_localversion}"
+triggers="kernel-hooks"
+kernel_hooks_version="${_kernver}"
+
+# These files could be modified when an external module is built.
+mutable_files="
+ /usr/lib/modules/${_kernver}/modules.builtin.bin
+ /usr/lib/modules/${_kernver}/modules.builtin.alias.bin
+ /usr/lib/modules/${_kernver}/modules.softdep
+ /usr/lib/modules/${_kernver}/modules.dep
+ /usr/lib/modules/${_kernver}/modules.dep.bin
+ /usr/lib/modules/${_kernver}/modules.symbols
+ /usr/lib/modules/${_kernver}/modules.symbols.bin
+ /usr/lib/modules/${_kernver}/modules.alias
+ /usr/lib/modules/${_kernver}/modules.alias.bin
+ /usr/lib/modules/${_kernver}/modules.devname"
+
+# reproducible build
+export KBUILD_BUILD_TIMESTAMP=$(LC_ALL=C date -ud @${SOURCE_DATE_EPOCH:-0})
+export KBUILD_BUILD_USER=voidlinux
+export KBUILD_BUILD_HOST=voidlinux
+
+if [ "$CROSS_BUILD" ]; then
+	_cross="CROSS_COMPILE=${XBPS_CROSS_TRIPLET}-"
+fi
+
+do_configure() {
+	local arch
+
+	arch=arm64
+
+	cp -f ${FILESDIR}/pipa.config .config
+}
+
+do_build() {
+	local arch _args
+
+	_args="Image modules dtbs"
+	arch=arm64
+
+	export LDFLAGS=
+	make ARCH=$arch ${_cross} ${makejobs} prepare
+	make ARCH=$arch ${_cross} ${makejobs} ${_args}
+}
+
+do_install() {
+	local arch _args hdrdest
+
+	arch=arm64
+
+	# Run depmod after compressing modules - makes depmod.sh a noop
+	sed -i '2iexit 0' scripts/depmod.sh
+	vmkdir usr/lib
+	ln -s usr/lib/ ${DESTDIR}
+
+	# Install kernel, firmware and modules
+	make ${makejobs} ARCH=${arch} INSTALL_MOD_PATH=${DESTDIR} ${_cross} modules_install
+
+	hdrdest=${DESTDIR}/usr/src/kernel-headers-${_kernver}
+
+	vinstall .config 644 boot config-${_kernver}
+	vinstall System.map 644 boot System.map-${_kernver}
+
+	vinstall arch/arm64/boot/Image 644 boot vmlinux-${_kernver}
+	make ${makejobs} ARCH=${arch} INSTALL_DTBS_PATH=${DESTDIR}/boot/dtbs/dtbs-${_kernver} ${_cross} dtbs_install
+
+	# Switch to /usr.
+	vmkdir usr
+
+	cd ${DESTDIR}/usr/lib/modules/${_kernver}
+	rm -f source build
+	ln -sf ../../../src/kernel-headers-${_kernver} build
+
+	cd ${wrksrc}
+	# Install required headers to build external modules
+	install -Dm644 Makefile ${hdrdest}/Makefile
+	install -Dm644 Kbuild ${hdrdest}/Kbuild
+	install -Dm644 kernel/Makefile ${hdrdest}/kernel/Makefile
+	install -Dm644 .config ${hdrdest}/.config
+	for file in $(find . -name Kconfig\*); do
+		mkdir -p ${hdrdest}/$(dirname $file)
+		install -Dm644 $file ${hdrdest}/${file}
+	done
+	for file in $(find arch/${arch} scripts -name module.lds -o -name Kbuild.platforms -o -name Platform); do
+		mkdir -p ${hdrdest}/$(dirname $file)
+		install -Dm644 $file ${hdrdest}/${file}
+	done
+	mkdir -p ${hdrdest}/include
+	# Remove firmware stuff provided by the "linux-firmware" pkg.
+	rm -rf ${DESTDIR}/usr/lib/firmware
+
+	for i in acpi asm-generic clocksource config crypto drm generated linux vdso \
+		math-emu media net pcmcia scsi sound trace uapi video xen dt-bindings; do
+		if [ -d include/$i ]; then
+			cp -a include/$i ${hdrdest}/include
+		fi
+	done
+
+	cd ${wrksrc}
+	mkdir -p ${hdrdest}/arch/${arch}
+	cp -a arch/${arch}/include ${hdrdest}/arch/${arch}
+
+	# Remove helper binaries built for host,
+	# if generated files from the scripts/ directory need to be included,
+	# they need to be copied to ${hdrdest} before this step
+	if [ "$CROSS_BUILD" ]; then
+		make ${makejobs} ARCH=${arch} ${_cross} _mrproper_scripts
+		# remove host specific objects as well
+		find scripts -name '*.o' -delete
+	fi
+
+	# Copy files necessary for later builds, like nvidia and vmware
+	cp Module.symvers ${hdrdest}
+	cp -a scripts ${hdrdest}
+	mkdir -p ${hdrdest}/security/selinux
+	cp -a security/selinux/include ${hdrdest}/security/selinux
+	mkdir -p ${hdrdest}/tools/include
+	cp -a tools/include/tools ${hdrdest}/tools/include
+	if [ -d "arch/${arch}/tools" ]; then
+		cp -a "arch/${arch}/tools" "${hdrdest}/arch/${arch}"
+	fi
+	cp -a kernel/time/timeconst.bc "${hdrdest}/kernel/time"
+	cp -a kernel/bounds.c "${hdrdest}/kernel"
+
+
+	mkdir -p ${hdrdest}/arch/${arch}/kernel
+	cp arch/${arch}/Makefile ${hdrdest}/arch/${arch}
+
+	mkdir -p ${hdrdest}/arch/arm64/kernel
+	cp arch/arm64/kernel/asm-offsets.s ${hdrdest}/arch/arm64/kernel
+	cp -a arch/arm64/kernel/vdso ${hdrdest}/arch/arm64/kernel/
+
+	# Add md headers
+	mkdir -p ${hdrdest}/drivers/md
+	cp drivers/md/*.h ${hdrdest}/drivers/md
+
+	# Add inotify.h
+	mkdir -p ${hdrdest}/include/linux
+	cp include/linux/inotify.h ${hdrdest}/include/linux
+
+	# Add wireless headers
+	mkdir -p ${hdrdest}/net/mac80211/
+	cp net/mac80211/*.h ${hdrdest}/net/mac80211
+
+	# Add xfs and shmem for aufs building
+	mkdir -p ${hdrdest}/fs/xfs/libxfs
+	mkdir -p ${hdrdest}/mm
+	cp fs/xfs/libxfs/xfs_sb.h ${hdrdest}/fs/xfs/libxfs/xfs_sb.h
+
+	# Add objtool binary, needed to build external modules with dkms
+
+	install -Dm644 vmlinux ${DESTDIR}/usr/lib/debug/boot/vmlinux-${_kernver}
+
+	depmod -b ${DESTDIR}/usr -F System.map ${_kernver}
+	rm -f ${DESTDIR}/lib
+}

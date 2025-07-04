@@ -42,12 +42,7 @@ if [ "$USE_CACHE_REPO" -eq 1 ]; then
 	echo "repository=$CACHE_REPO" > rootfs_mountpoint/etc/xbps.d/10-repository-main.conf
 fi
 
-chroot rootfs_mountpoint xbps-install -Suy gnome gnome-apps gdm mesa-freedreno-dri pipewire bluez pipa-bt-quirk libspa-bluetooth xdg-desktop-portal-gtk
-
-# Pipewire
-chroot rootfs_mountpoint mkdir -pv /etc/pipewire/pipewire.conf.d
-chroot rootfs_mountpoint /bin/bash -c "ln -s /usr/share/examples/wireplumber/10-wireplumber.conf /etc/pipewire/pipewire.conf.d/"
-chroot rootfs_mountpoint /bin/bash -c "ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf /etc/pipewire/pipewire.conf.d/"
+chroot rootfs_mountpoint xbps-install -Suy gnome gnome-apps gdm mesa-freedreno-dri pipewire bluez pipa-bt-quirk libspa-bluetooth xdg-desktop-portal-gtk pulseaudio
 
 # Enable services
 chroot rootfs_mountpoint /bin/bash -c "ln -sv /etc/sv/gdm /etc/runit/runsvdir/default"

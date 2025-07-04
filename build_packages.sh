@@ -26,7 +26,7 @@ if [ ! -d "repo" ]; then
 	mkdir repo
 	cd void-packages
 	XBPS_ALLOW_CHROOT_BREAKOUT=1 ./xbps-src binary-bootstrap
-	for PACKAGE in $PACKAGES; do
+	for PACKAGE in $PACKAGES_BUILD; do
 		XBPS_ALLOW_CHROOT_BREAKOUT=1 ./xbps-src -a aarch64 pkg $PACKAGE
 	done
 	cp -rv hostdir/binpkgs/* ../repo
